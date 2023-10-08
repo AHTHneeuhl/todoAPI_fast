@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# FastAPI-specific files
+__pycache__/
+*.db
+
+# Logs
+*.log
+
+# Compiled Python files
+*.pyc
+
+# Environment configuration
+.env
+
+# Local development files
+*.sqlite3
+
+# Other
+*.swp
+.DS_Store
+Thumbs.db
