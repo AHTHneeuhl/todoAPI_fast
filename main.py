@@ -5,10 +5,13 @@ from typing import Annotated
 from starlette import status
 from models import Todo, Base
 from db import engine, SessionLocal
+from routes import auth
 
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
+
+app.include_router(auth.router)
 
 
 def get_db():
