@@ -32,7 +32,7 @@ class TodoRequest(BaseModel):
 @router.get("/", status_code=status.HTTP_200_OK)
 async def read_all(user: user_dependency, db: db_dependency):
     if user is None:
-        raise HTTPException(status_code=401, detail="Authentication failed")
+        raise HTTPException(status_code=401, detail="Authorization failed")
     return db.query(Todo).filter(Todo.owner_id == user.get("id")).all()
 
 
@@ -41,7 +41,7 @@ async def read_todo(
     user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)
 ):
     if user is None:
-        raise HTTPException(status_code=401, detail="Authentication failed")
+        raise HTTPException(status_code=401, detail="Authorization failed")
     todo = (
         db.query(Todo)
         .filter(Todo.id == todo_id)
@@ -58,7 +58,7 @@ async def create_todo(
     user: user_dependency, db: db_dependency, todo_request: TodoRequest
 ):
     if user is None:
-        raise HTTPException(status_code=401, detail="Authentication failed")
+        raise HTTPException(status_code=401, detail="Authorization failed")
     todo = Todo(**todo_request.model_dump(), owner_id=user.get("id"))
     db.add(todo)
     db.commit()
@@ -72,7 +72,7 @@ async def update_todo(
     todo_id: int = Path(gt=0),
 ):
     if user is None:
-        raise HTTPException(status_code=401, detail="Authentication failed")
+        raise HTTPException(status_code=401, detail="Authorization failed")
     todo = (
         db.query(Todo)
         .filter(Todo.id == todo_id)
@@ -93,8 +93,17 @@ async def update_todo(
 
 
 @router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_todo(db: db_dependency, todo_id: int = Path(gt=0)):
-    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+async def delete_todo(
+    user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authorization failed")
+    todo = (
+        db.query(Todo)
+        .filter(Todo.id == todo_id)
+        .filter(Todo.owner_id == user.get("id"))
+        .first()
+    )
     if todo is not None:
         db.delete(todo)
         db.commit()
