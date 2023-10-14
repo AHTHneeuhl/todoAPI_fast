@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from passlib.context import CryptContext
 from models import User
 from db import SessionLocal
@@ -35,7 +35,7 @@ class UserRequest(BaseModel):
     email: str
     first_name: str
     last_name: str
-    password: str
+    password: str = Field(min_length=6)
     role: str
 
 
